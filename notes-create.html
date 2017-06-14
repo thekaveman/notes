@@ -1,0 +1,54 @@
+<p>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-form">
+    <i class="glyphicon glyphicon-plus-sign"></i> New note
+  </button>
+</p>
+
+<div class="modal fade" id="new-form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <input type="text" class="form-control" placeholder="Title" id="new-title" />
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" rows="5" cols="10" placeholder="Enter your note" id="new-body" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="btn-cancel">Cancel</button>
+        <button type="button" class="btn btn-success" id="btn-save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(function() {
+    var form = $("#new-form")
+    var title = $("#new-title");
+    var body = $("#new-body");
+
+    var manager = new NotesManager();
+
+    $("#btn-cancel").on("click", function() {
+      reset();
+    });
+
+    $("#btn-save").on("click", function() {
+      save();
+      reset();
+    });
+
+    function save() {
+      manager.load();
+      var note = new Note(title.val(), body.val());
+      manager.save(note);
+    }
+
+    function reset() {
+      title.val("");
+      body.val("");
+      form.modal("hide");
+    }
+  });
+</script>

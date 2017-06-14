@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title"><i class="glyphicon glyphicon-list"></i> Notes</h2>
+  </div>
+  <div class="panel-body"></div>
+</div>
+
+<script>
+  $(function() {
+    var manager = new NotesManager();
+
+    function reload() {
+      var notes = manager.load();
+      console.log(notes);
+      return notes;
+    }
+
+    $(document).on(manager.saveEvent, function() {
+      reload();
+    });
+
+    reload();
+  })
+</script>
