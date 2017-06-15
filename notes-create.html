@@ -41,7 +41,7 @@
 
     function save() {
       manager.load();
-      var note = new Note(title.val(), body.val());
+      var note = new Note({ title: title.val(), body: body.val() });
       manager.save(note);
     }
 

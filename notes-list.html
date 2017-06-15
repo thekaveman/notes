@@ -15,11 +15,13 @@
 <li class="list-group-item notes-item hidden">
   <p class="text-muted timestamp pull-right"></p>
   <h3 class="list-group-item-heading title"></h3>
-  <input class="form-control hidden title" />
+  <input class="form-control hidden title" placeholder="Title" />
   <p class="body"></p>
-  <textarea class="form-control body hidden" rows="5" cols="10"></textarea>
+  <textarea class="form-control body hidden" rows="5" cols="10" placeholder="Enter your note"></textarea>
   <div class="btn-group pull-right">
     <button type="button" class="btn btn-warning edit">Edit</button>
+    <button type="button" class="btn btn-default cancel hidden">Cancel</button>
+    <button type="button" class="btn btn-success save hidden">Save</button>
     <button type="button" class="btn btn-danger delete">Delete</button>
   </div>
 </li>
@@ -65,13 +67,49 @@
       return item;
     }
 
+    function toggleEdit(on, target) {
+      var hidden = "hidden";
+      if (on) {
+        target.parent().prevAll(".title").addClass(hidden);
+        target.parent().prevAll(".body").addClass(hidden);
+        target.parent().prevAll(".form-control").removeClass(hidden);
+        target.addClass(hidden);
+        target.siblings(".cancel").removeClass(hidden);
+        target.siblings(".save").removeClass(hidden);
+        target.siblings(".delete").addClass(hidden);
+      }
+      else {
+        target.parent().prevAll(".title").removeClass(hidden);
+        target.parent().prevAll(".body").removeClass(hidden);
+        target.parent().prevAll(".form-control").addClass(hidden);
+        target.siblings(".edit").removeClass(hidden);
+        target.addClass(hidden);
+        target.siblings(".save").addClass(hidden);
+        target.siblings(".delete").removeClass(hidden);
+      }
+    }
+
+    function save(id, target) {
+      var note = manager.load(id);
+      var title = target.parent().prevAll(".form-control.title").val();
+      var body = target.parent().prevAll(".form-control.body").val();
+
+      note.update(title, body);
+      manager.save(note);
+    }
+
     list.on("click", ".btn", function() {
       var btn = $(this);
       var id = btn.data("note-id");
-      console.log(id);
 
       if (btn.hasClass("edit")) {
-        console.log("editing");
+        toggleEdit(true, btn);
+      }
+      else if (btn.hasClass("cancel")) {
+        toggleEdit(false, btn);
+      }
+      else if (btn.hasClass("save")) {
+        save(id, btn);
       }
       else if (btn.hasClass("delete")) {
         manager.delete(id);

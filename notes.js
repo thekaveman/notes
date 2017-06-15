@@ -1,11 +1,23 @@
-function Note(title, body) {
+function Note(data) {
+  this.title = data.title;
+  this.body = data.body;
+
+  if (data.id) {
+    this.timestamp = data.timestamp;
+    this.id = data.id;
+  }
+  else {
+    var ts = new Date();
+    this.timestamp = ts.toLocaleString();
+    this.id = ts.getTime();
+  }
+}
+
+Note.prototype.update = function(title, body) {
   this.title = title;
   this.body = body;
-
-  var ts = new Date();
-  this.timestamp = ts.toLocaleString();
-  this.id = ts.getTime();
-}
+  this.timestamp = new Date().toLocaleString();
+};
 
 function NotesManager() {
   this.key = "notes";
@@ -29,21 +41,21 @@ NotesManager.prototype.save = function(note) {
 NotesManager.prototype.load = function(id) {
   var manager = this;
 
-  var data = localStorage.getItem(manager.key) || "{}";
-  manager.notes = JSON.parse(data);
+  var storedData = localStorage.getItem(manager.key) || "{}";
+  var parsedData = JSON.parse(storedData);
+
+  $.each(parsedData, function(_, data) {
+    var note = new Note(data);
+    manager.notes[note.id] = note;
+  });
 
   if (id) {
     return manager.notes[id];
   }
   else {
-    var notes = [];
-
-    Object.keys(manager.notes).forEach(function(id) {
-      var note = manager.notes[id];
-      notes.push(note);
+    return $.map(manager.notes, function(note) {
+      return note;
     });
-
-    return notes;
   }
 };
 

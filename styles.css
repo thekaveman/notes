@@ -6,3 +6,7 @@ ul {
 .notes-item {
   overflow: hidden;
 }
+
+input.title, textarea.body {
+  margin-bottom: 10px;
+}
