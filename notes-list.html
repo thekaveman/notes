@@ -1,6 +1,9 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2 class="panel-title"><i class="glyphicon glyphicon-list"></i> My Notes</h2>
+    <h2 class="panel-title">
+      <i class="glyphicon glyphicon-list"></i> My Notes
+      <small class="pull-right"><span class="badge" id="notes-count"></span></small>
+    </h2>
   </div>
   <div class="panel-body" id="empty-msg">
     <p>You haven't added any notes!
@@ -12,14 +15,21 @@
 <li class="list-group-item notes-item hidden">
   <p class="text-muted timestamp pull-right"></p>
   <h3 class="list-group-item-heading title"></h3>
+  <input class="form-control hidden title" />
   <p class="body"></p>
+  <textarea class="form-control body hidden" rows="5" cols="10"></textarea>
+  <div class="btn-group pull-right">
+    <button type="button" class="btn btn-warning edit">Edit</button>
+    <button type="button" class="btn btn-danger delete">Delete</button>
+  </div>
 </li>
 
 <script>
   $(function() {
     var manager = new NotesManager();
 
-    var emptyMsg = $("#empty-msg")
+    var count = $("#notes-count");
+    var emptyMsg = $("#empty-msg");
     var list = $("#notes-list");
     var template = $(".notes-item.hidden");
 
@@ -28,26 +38,47 @@
 
       var notes = manager.load();
 
+      count.text(notes.length);
+
       if (notes.length > 0) {
         emptyMsg.addClass("hidden");
+
+        $.each(notes, function(_, note) {
+          var item = create(note);
+          list.append(item);
+        });
       }
       else {
         emptyMsg.removeClass("hidden");
       }
-
-      $.each(notes, function(_, note) {
-        var item = template.clone().removeClass("hidden");
-        console.log(note);
-
-        item.find(".title").text(note.title);
-        item.find(".timestamp").text(note.timestamp);
-        item.find(".body").text(note.body);
-
-        list.append(item);
-      });
     }
 
-    $(document).on(manager.saveEvent, function() {
+    function create(note) {
+      var item = template.clone().removeClass("hidden");
+
+      item.find(".title").text(note.title).val(note.title);
+      item.find(".timestamp").text(note.timestamp);
+      item.find(".body").text(note.body).val(note.body);
+
+      item.find(".btn").data("note-id", note.id);
+
+      return item;
+    }
+
+    list.on("click", ".btn", function() {
+      var btn = $(this);
+      var id = btn.data("note-id");
+      console.log(id);
+
+      if (btn.hasClass("edit")) {
+        console.log("editing");
+      }
+      else if (btn.hasClass("delete")) {
+        manager.delete(id);
+      }
+    });
+
+    $(document).on(manager.updateEvent, function() {
       reload();
     });
 

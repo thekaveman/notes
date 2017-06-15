@@ -10,18 +10,20 @@ function Note(title, body) {
 function NotesManager() {
   this.key = "notes";
   this.notes = {};
-  this.saveEvent = "notes:save";
+  this.updateEvent = "notes:save";
 }
 
 NotesManager.prototype.save = function(note) {
   var manager = this;
 
-  manager.notes[note.id] = note;
+  if (note) {
+    manager.notes[note.id] = note;
+  }
 
   var data = JSON.stringify(manager.notes);
   localStorage.setItem(manager.key, data);
 
-  $(document).trigger(manager.saveEvent);
+  $(document).trigger(manager.updateEvent);
 };
 
 NotesManager.prototype.load = function(id) {
@@ -42,5 +44,14 @@ NotesManager.prototype.load = function(id) {
     });
 
     return notes;
+  }
+};
+
+NotesManager.prototype.delete = function(id) {
+  var manager = this;
+
+  if (id) {
+    delete manager.notes[id];
+    manager.save();
   }
 };
