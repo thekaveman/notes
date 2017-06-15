@@ -2,19 +2,24 @@
   <div class="panel-heading">
     <h2 class="panel-title"><i class="glyphicon glyphicon-list"></i> My Notes</h2>
   </div>
+  <div class="panel-body" id="empty-msg">
+    <p>You haven't added any notes!
+  </div>
   <ul class"list-group" id="notes-list">
   </ul>
 </div>
 
 <li class="list-group-item notes-item hidden">
+  <p class="text-muted timestamp pull-right"></p>
   <h3 class="list-group-item-heading title"></h3>
-  <p class="text-muted timestamp"></p>
   <p class="body"></p>
 </li>
 
 <script>
   $(function() {
     var manager = new NotesManager();
+
+    var emptyMsg = $("#empty-msg")
     var list = $("#notes-list");
     var template = $(".notes-item.hidden");
 
@@ -22,6 +27,13 @@
       list.empty();
 
       var notes = manager.load();
+
+      if (notes.length > 0) {
+        emptyMsg.addClass("hidden");
+      }
+      else {
+        emptyMsg.removeClass("hidden");
+      }
 
       $.each(notes, function(_, note) {
         var item = template.clone().removeClass("hidden");

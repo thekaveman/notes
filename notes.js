@@ -3,7 +3,7 @@ function Note(title, body) {
   this.body = body;
 
   var ts = new Date();
-  this.timestamp = ts;
+  this.timestamp = ts.toLocaleString();
   this.id = ts.getTime();
 }
 
@@ -26,7 +26,7 @@ NotesManager.prototype.save = function(note) {
 
 NotesManager.prototype.load = function(id) {
   var manager = this;
-  
+
   var data = localStorage.getItem(manager.key) || "{}";
   manager.notes = JSON.parse(data);
 
