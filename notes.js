@@ -22,7 +22,7 @@ Note.prototype.update = function(title, body) {
 function NotesManager() {
   this.key = "notes";
   this.notes = {};
-  this.updateEvent = "notes:save";
+  this.updateEvent = "notes:update";
 }
 
 NotesManager.prototype.save = function(note) {
